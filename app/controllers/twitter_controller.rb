@@ -2,7 +2,8 @@ require 'open-uri'
 require 'base64'
 
 class TwitterController < ApplicationController
-  def view_tweet
+
+  def create_connection
     encoded_key = URI::encode(ENV["twitter_api_key"])
     encoded_secret = URI::encode(ENV["twitter_api_secret"])
     bearer_credentials = "#{encoded_key}:#{encoded_secret}"
@@ -22,6 +23,29 @@ class TwitterController < ApplicationController
       req.body = 'grant_type=client_credentials'
     end
 
-    puts response.body
+    parsed_response = JSON.parse(response.body)
+    access_token = parsed_response["access_token"]
+
+    return {token: access_token, connection: conn}
   end
+
+  def view_tweet
+    
+  end
+
+  def retrieve_tweets_for_handle
+    connection_info = create_connection
+
+    bearer_token = connection_info[:token]
+    conn = connection_info[:connection]
+
+    response = conn.get do |req|
+      req.url '/1.1/statuses/user_timeline.json?screen_name=cnn'
+      req.headers['Authorization'] = "Bearer #{bearer_token}"
+    end
+
+    render json: JSON.parse(response.body)
+
+  end
+
 end
