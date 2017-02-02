@@ -1,11 +1,20 @@
+
+  <div class="row">
+    <div class="col-md-4">
+      <form data-bind="submit: retrieveTweets">
+        <input data-bind="value: twitter_handle" />
+        <button type="submit">Go</button>
+      </form>
+    </div>
+
+    <div class="col-md-8">
+      <div id ="tweet-container" data-bind="foreach: tweets">
+        <div>
+          <p data-bind="html: text"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<%= javascript_include_tag 'URI.js' %>
 <%= javascript_include_tag 'view_tweet.js' %>
-
-<div class="container">
-  <div class="col-md-4">
-    <input data-bind="value: twitter_handle" />
-  </div>
-
-  <div class="col-md-8">
-  </div>
-
-</div>

@@ -33,14 +33,14 @@ class TwitterController < ApplicationController
     
   end
 
-  def retrieve_tweets_for_handle
+  def retrieve_tweets_for_handle    
     connection_info = create_connection
 
     bearer_token = connection_info[:token]
     conn = connection_info[:connection]
 
     response = conn.get do |req|
-      req.url '/1.1/statuses/user_timeline.json?screen_name=cnn'
+      req.url "/1.1/statuses/user_timeline.json?screen_name=#{params["screen_name"]}&count=25"
       req.headers['Authorization'] = "Bearer #{bearer_token}"
     end
 
