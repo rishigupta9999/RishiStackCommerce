@@ -31,12 +31,7 @@ class TwitterControllerTest < ActionDispatch::IntegrationTest
     VCR.use_cassette('retrieve_tweet') do
       response = get '/twitter/retrieve_tweets_for_handle', { :screen_name => "dhh" }
     end
-
-    Rails::logger.debug response.inspect
-
-    puts response
-    assert_select "div"
-
+    
     assert_response :success
   end
 
