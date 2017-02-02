@@ -44,6 +44,8 @@ class TwitterController < ApplicationController
       req.headers['Authorization'] = "Bearer #{bearer_token}"
     end
 
+    Rails::logger.debug "Foobar"
+
     render json: JSON.parse(response.body)
 
   end
