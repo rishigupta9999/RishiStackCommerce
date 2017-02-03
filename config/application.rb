@@ -15,8 +15,6 @@ module RishiStackCommerce
       if ENV['REDIS_URL']
         config.action_controller.perform_caching = true
         config.cache_store = :redis_store, { expires_in: 5.minutes }
-
-        puts "Will perform caching"
       else
         config.action_controller.perform_caching = false
         config.cache_store = :null_store
