@@ -8,6 +8,13 @@ function TwitterViewModel()
 
   self.current_screen_name = null;
 
+  window.gotoMention = function(event)
+  {
+    mention_name = event.attributes.getNamedItem("mention-name").value.slice(1);
+    self.twitter_handle(mention_name);
+    self.retrieveTweetsHelper(true);
+  }
+
   self.retrieveTweets = function()
   {
     self.retrieveTweetsHelper(true);
@@ -35,8 +42,13 @@ function TwitterViewModel()
           return "<a target=\"_blank\" href=\"" + url + "\">" + url + "</a>";
         });
 
+        mentions_parsed = links_added.replace(/[@]+[A-Za-z0-9-_]+/g, function(mention) {
+          
+          return "<a href=\"javascript:void(0)\" onclick=\"gotoMention(this)\" mention-name=\"" + mention + "\">" + mention + "\</a>";
+        });
+
         tweetInfo = {
-                      "text" : links_added,
+                      "text" : mentions_parsed,
                     };
 
         self.tweets.push(tweetInfo)
