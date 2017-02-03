@@ -6,12 +6,26 @@ function TwitterViewModel()
   self.tweets = ko.observableArray()
   self.retrievingTweets = ko.observable(false);
 
+  self.current_screen_name = null;
+
   self.retrieveTweets = function()
+  {
+    self.retrieveTweetsHelper(true);
+  }
+
+  self.retrieveTweetsHelper = function(updatePushState)
   {
     self.tweets.removeAll();
     self.retrievingTweets(true);
 
-    $.get("/twitter/retrieve_tweets_for_handle", { "screen_name" : self.twitter_handle() }, function(data) {
+    self.current_screen_name = self.twitter_handle();
+
+    if (updatePushState)
+    {
+      history.pushState(self.current_screen_name, null, null);
+    }
+
+    $.get("/twitter/retrieve_tweets_for_handle", { "screen_name" : self.current_screen_name }, function(data) {
 
       for (cur_tweet in data)
       {
@@ -31,7 +45,14 @@ function TwitterViewModel()
       self.retrievingTweets(false);
     });
   }
+
+  window.addEventListener('popstate', function(event) {
+    self.twitter_handle(event.state);
+    self.retrieveTweetsHelper(false);
+  });
+
 }
+
 
 $(document).ready(function(){
   ko.applyBindings(new TwitterViewModel());
