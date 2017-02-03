@@ -9,7 +9,7 @@ See http://rishi-stack-commerce.herokuapp.com
 
 1. PostgreSQL.  I use the version here https://postgresapp.com/
 2. Redis.  Homebrew is fine `brew install redis`
-3. Rails 5 using your favorite method.
+3. Rails 5 using your favorite installation method.
 
 ### Installation
 1. Clone this repo
@@ -20,7 +20,7 @@ See http://rishi-stack-commerce.herokuapp.com
 > Note: The database is used only for Devise.
 
 ### Running
-1. (Optional) Start Redis with `redis-server`.  You will need to set your `ENV['REDIS_URL']` environment variable.
+1. (Optional) Start Redis with `redis-server`.  You will need to set your `ENV['REDIS_URL']` environment variable.  Without Redis the app will not fail, but no caching will be used.
 2. Set `ENV['TWITTER_API_KEY']` and `ENV['TWITTER_API_SECRET']` to the appropriate values.
 3. `rails s`
 
@@ -49,16 +49,17 @@ When a different Twitter Screen Name is followed, or you click on a *@mention*, 
 
 In the interests of time, I did *not* implement Hash based navigation.  Just pushState.
 
-### Caching
-`redis-rails` is used for caching.  Redis isn't being called directly, rather it's used as a Rails cache store.
-
-All keys (auth token and tweet requests) are cached for 5 minutes.  If you are running locally, you can observe this with `redis-cli` - or just observe every request after your first one being much faster since there is no need to retrieve the bearer token.  And requests to a prior screen name are almost instantaneous.
-
 ### Testing
-You can run tests with `rake test`.  Minitest is used.  The testing checks the following.
+You can run tests with `rake test`.  Minitest is used.  [VCR](https://github.com/vcr/vcr) is used to mock the HTTP calls.  The testing checks the following.
 
 1. Devise login allows one to access the main "View Tweet" page.
 2. Lack of login denies this access.
-3. Calling the endpoint for retrieving the JSON and doing a couple sanity checks.
+3. Calling the endpoint for retrieving the user timeline JSON is successful.  A few basic sanity checks are performed on this data.
 
-The front end isn't tested.  Time permitting I could use Jasmine or something.
+The front end doesn't have tests.  Time permitting I could use Jasmine or similar.
+
+
+### Caching
+`redis-rails` is used for caching.  Redis isn't being called directly with the raw get/set APIs, rather it's used as a Rails cache store and the standard Rails caching APIs are used.
+
+All values in the cache (auth token and tweet requests) are cached for 5 minutes.  If you are running locally, you can observe this with `redis-cli` and look at the `TTL` as well as observe the key values with `GET` - or just observe every request after your first one being much faster since there is no need to retrieve the bearer token again.  And requests to a prior Twitter screen name are almost instantaneous.
