@@ -4,8 +4,8 @@ require 'base64'
 class TwitterController < ApplicationController
 
   def create_connection
-    encoded_key = URI::encode(ENV["twitter_api_key"])
-    encoded_secret = URI::encode(ENV["twitter_api_secret"])
+    encoded_key = URI::encode(ENV["TWITTER_API_KEY"])
+    encoded_secret = URI::encode(ENV["TWITTER_API_SECRET"])
     bearer_credentials = "#{encoded_key}:#{encoded_secret}"
 
     bearer_credentials_base64 = Base64.strict_encode64(bearer_credentials)
@@ -17,8 +17,7 @@ class TwitterController < ApplicationController
     end
 
     access_token = Rails.cache.fetch("access_token", expires_in: 5.minutes) do
-      puts "Access token cache miss"
-      
+
       response = conn.post do |req|
         req.url '/oauth2/token'
         req.headers['Authorization'] = "Basic #{bearer_credentials_base64}"
@@ -43,12 +42,21 @@ class TwitterController < ApplicationController
     bearer_token = connection_info[:token]
     conn = connection_info[:connection]
 
-    response = conn.get do |req|
-      req.url "/1.1/statuses/user_timeline.json?screen_name=#{params["screen_name"]}&count=25"
-      req.headers['Authorization'] = "Bearer #{bearer_token}"
+    screen_name = params["screen_name"]
+
+    parsed_response = Rails.cache.fetch("tweet-#{screen_name}", expires_in: 5.minutes) do
+
+      puts "Tweet cache miss"
+
+      response = conn.get do |req|
+        req.url "/1.1/statuses/user_timeline.json?screen_name=#{screen_name}&count=25"
+        req.headers['Authorization'] = "Bearer #{bearer_token}"
+      end
+
+      parsed_response = JSON.parse(response.body)
     end
 
-    render json: JSON.parse(response.body)
+    render json: parsed_response
 
   end
 
