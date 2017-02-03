@@ -1,5 +1,8 @@
 # Rishi Stack Commerce Project
 
+## Live version
+See http://rishi-stack-commerce.herokuapp.com
+
 ## Setup
 
 ### Prequisites
