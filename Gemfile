@@ -47,6 +47,8 @@ gem 'figaro'
 gem 'knockoutjs-rails', '~> 3.4.0'
 # For mock HTTP data for testing
 gem 'vcr', '~> 3.0.3'
+# Redis for caching
+gem 'redis-rails', '~> 5.0.1'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

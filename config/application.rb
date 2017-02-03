@@ -11,5 +11,15 @@ module RishiStackCommerce
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
+
+      if ENV['REDIS_URL']
+        config.action_controller.perform_caching = true
+        config.cache_store = :redis_store, { expires_in: 5.minutes }
+
+        puts "Will perform caching"
+      else
+        config.action_controller.perform_caching = false
+        config.cache_store = :null_store
+      end
   end
 end

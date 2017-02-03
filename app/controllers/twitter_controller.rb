@@ -16,15 +16,19 @@ class TwitterController < ApplicationController
       faraday.adapter  Faraday.default_adapter
     end
 
-    response = conn.post do |req|
-      req.url '/oauth2/token'
-      req.headers['Authorization'] = "Basic #{bearer_credentials_base64}"
-      req.headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
-      req.body = 'grant_type=client_credentials'
-    end
+    access_token = Rails.cache.fetch("access_token", expires_in: 5.minutes) do
+      puts "Access token cache miss"
+      
+      response = conn.post do |req|
+        req.url '/oauth2/token'
+        req.headers['Authorization'] = "Basic #{bearer_credentials_base64}"
+        req.headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
+        req.body = 'grant_type=client_credentials'
+      end
 
-    parsed_response = JSON.parse(response.body)
-    access_token = parsed_response["access_token"]
+      parsed_response = JSON.parse(response.body)
+      access_token = parsed_response["access_token"]
+    end
 
     return {token: access_token, connection: conn}
   end
