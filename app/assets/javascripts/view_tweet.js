@@ -4,13 +4,14 @@ function TwitterViewModel()
 
   self.twitter_handle = ko.observable('');
   self.tweets = ko.observableArray()
+  self.retrievingTweets = ko.observable(false);
 
   self.retrieveTweets = function()
   {
     self.tweets.removeAll();
+    self.retrievingTweets(true);
 
     $.get("/twitter/retrieve_tweets_for_handle", { "screen_name" : self.twitter_handle() }, function(data) {
-      console.log(data);
 
       for (cur_tweet in data)
       {
@@ -26,6 +27,8 @@ function TwitterViewModel()
 
         self.tweets.push(tweetInfo)
       }
+
+      self.retrievingTweets(false);
     });
   }
 }

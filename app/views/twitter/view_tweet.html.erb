@@ -13,6 +13,7 @@
     </div>
 
     <div class="col-md-8">
+      <div class="spinner" data-bind="visible: retrievingTweets"></div>
       <div class="tweet-container" data-bind="foreach: tweets">
         <div class="tweet col-md-6">
           <div>
