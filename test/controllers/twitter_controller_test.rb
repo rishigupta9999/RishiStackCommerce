@@ -32,6 +32,8 @@ class TwitterControllerTest < ActionDispatch::IntegrationTest
       response = get '/twitter/retrieve_tweets_for_handle', { :screen_name => "dhh" }
     end
     
+    assert_equal(response.parsed_body.count, 25, "Expected 25 tweets")
+    assert(response.parsed_body.first.key?('text'), "Expected to find text in a tweet")
     assert_response :success
   end
 

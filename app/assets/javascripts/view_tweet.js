@@ -2,7 +2,7 @@ function TwitterViewModel()
 {
   var self = this;
 
-  self.twitter_handle = ko.observable('');
+  self.twitterHandle = ko.observable('');
   self.tweets = ko.observableArray()
   self.retrievingTweets = ko.observable(false);
 
@@ -11,7 +11,7 @@ function TwitterViewModel()
   window.gotoMention = function(event)
   {
     mention_name = event.attributes.getNamedItem("mention-name").value.slice(1);
-    self.twitter_handle(mention_name);
+    self.twitterHandle(mention_name);
     self.retrieveTweetsHelper(true);
   }
 
@@ -25,7 +25,7 @@ function TwitterViewModel()
     self.tweets.removeAll();
     self.retrievingTweets(true);
 
-    self.current_screen_name = self.twitter_handle();
+    self.current_screen_name = self.twitterHandle();
 
     if (updatePushState)
     {
@@ -59,7 +59,7 @@ function TwitterViewModel()
   }
 
   window.addEventListener('popstate', function(event) {
-    self.twitter_handle(event.state);
+    self.twitterHandle(event.state);
     self.retrieveTweetsHelper(false);
   });
 
