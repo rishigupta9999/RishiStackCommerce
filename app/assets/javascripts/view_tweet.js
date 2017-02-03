@@ -47,11 +47,11 @@ function TwitterViewModel()
           return "<a href=\"javascript:void(0)\" onclick=\"gotoMention(this)\" mention-name=\"" + mention + "\">" + mention + "\</a>";
         });
 
-        tweetInfo = {
+        tweet_info = {
                       "text" : mentions_parsed,
                     };
 
-        self.tweets.push(tweetInfo)
+        self.tweets.push(tweet_info)
       }
 
       self.retrievingTweets(false);
