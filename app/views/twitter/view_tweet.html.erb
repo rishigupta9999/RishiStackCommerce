@@ -13,12 +13,13 @@
     </div>
 
     <div class="col-md-8">
-      <div id ="tweet-container" data-bind="foreach: tweets">
-        <div class = "tweet">
-          <p data-bind="html: text"></p>
+      <div class="tweet-container" data-bind="foreach: tweets">
+        <div class="tweet col-md-6">
+          <div>
+            <p data-bind="html: text"></p>
+          </div>
         </div>
       </div>
-    </div>
   </div>
 
 <%= javascript_include_tag 'URI.js' %>

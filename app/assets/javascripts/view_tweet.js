@@ -17,7 +17,7 @@ function TwitterViewModel()
         text = data[cur_tweet].text;
 
         links_added = URI.withinString(text, function(url) {
-          return "<a>" + url + "</a>";
+          return "<a target=\"_blank\" href=\"" + url + "\">" + url + "</a>";
         });
 
         tweetInfo = {
