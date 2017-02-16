@@ -249,8 +249,7 @@ Devise.setup do |config|
   # up on your models and hooks.
   # config.omniauth :github, 'APP_ID', 'APP_SECRET', scope: 'user,public_repo'
 
-  config.omniauth :twitter, ENV["TWITTER_API_KEY"], ENV["TWITTER_API_KEY"],
-                callback_url: "/auth/twitter/callback"
+  config.omniauth :twitter, "E7Ra1wE1UidPdd9XLtnELQXbR", "xBxsG9Dde2kt4pfrtVFJotSVQI3ZVT6lGgvERXyL3XTZmRudRD"
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or
