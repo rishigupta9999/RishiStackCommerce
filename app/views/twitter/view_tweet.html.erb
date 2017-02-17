@@ -4,7 +4,7 @@
       <div class="panel panel-default">
         <div class="panel-heading">Enter a Twitter username below</div>
         <div class="panel-body">
-        <form data-bind="submit: retrieveTweets">
+        <form id="twitter-input-form" data-bind="submit: retrieveTweets" preset-twitter-handle = <%= @twitter_handle %> >
           <input data-bind="value: twitterHandle" />
           <button type="submit">Go</button>
         </form>

@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   root 'twitter#view_tweet'
   
-  get 'twitter/view_tweet'
+  get ':twitter_handle', to: 'twitter#view_tweet'
   get 'twitter/retrieve_tweets_for_handle'
 
   devise_for :users

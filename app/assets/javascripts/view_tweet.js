@@ -56,6 +56,15 @@ function TwitterViewModel()
 
       self.retrievingTweets(false);
     });
+
+  }
+
+  var twitter_handle = $("#twitter-input-form").attr("preset-twitter-handle")
+    
+  if (twitter_handle != "")
+  {
+    self.twitterHandle(twitter_handle);
+    self.retrieveTweets(false);
   }
 
   window.addEventListener('popstate', function(event) {

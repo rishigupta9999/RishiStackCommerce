@@ -33,10 +33,11 @@ class TwitterController < ApplicationController
   end
 
   def view_tweet
-    
+    @twitter_handle = params[:twitter_handle]
   end
 
-  def retrieve_tweets_for_handle    
+  def retrieve_tweets_for_handle
+  
     connection_info = create_connection
 
     bearer_token = connection_info[:token]
