@@ -1,7 +1,17 @@
 require 'open-uri'
 require 'base64'
+require 'cgi'
+require 'openssl'
 
 class TwitterController < ApplicationController
+
+  def nonce
+    rand(10 ** 30).to_s.rjust(30,'0')
+  end
+
+  def generate_signature
+    puts CGI.escape(Base64.encode64("#{OpenSSL::HMAC.digest('sha1',key, signature)}\n"))
+  end
 
   def create_connection
     encoded_key = URI::encode(ENV["TWITTER_API_KEY"])
@@ -28,6 +38,49 @@ class TwitterController < ApplicationController
       parsed_response = JSON.parse(response.body)
       access_token = parsed_response["access_token"]
     end
+
+    oauth_consumer_key = ENV['TWITTER_API_KEY']
+    oauth_nonce = self.nonce
+    oauth_signature_method = 'HMAC-SHA1'
+    oauth_timestamp = Time.now.to_i.to_s
+    oauth_token = current_user.token
+    oauth_version = "1.0"
+
+    byebug
+
+    parameters = 'oauth_consumer_key=' +
+              oauth_consumer_key +
+              '&oauth_nonce=' +
+              oauth_nonce +
+              '&oauth_signature_method=' +
+              oauth_signature_method +
+              '&oauth_timestamp=' +
+              oauth_timestamp +
+              '&oauth_token=' +
+              oauth_token + 
+              '&oauth_version=' +
+              oauth_version
+
+    url = "https://api.twitter.com//1.1/direct_messages.json"
+    base_string = 'GET&' + CGI.escape(url) + '&' + CGI.escape(parameters)
+    signing_key = CGI.escape(ENV['TWITTER_API_SECRET']) + "&" + CGI.escape(current_user.secret)
+
+    oauth_signature = CGI.escape(Base64.encode64("#{OpenSSL::HMAC.digest('sha1',signing_key, base_string)}").chomp)
+
+    SimpleOAuth::Header.new('GET', url, @options, @client.credentials.merge(ignore_extra_keys: true))
+
+    response = conn.post do |req|
+      req.url '/1.1/direct_messages.json'
+      req.headers['oauth_consumer_key'] = oauth_consumer_key
+      req.headers['oauth_nonce'] = oauth_nonce
+      req.headers['oauth_signature_method'] = oauth_signature_method
+      req.headers['oauth_timestamp'] = oauth_timestamp
+      req.headers['oauth_token'] = oauth_token
+      req.headers['oauth_version'] = oauth_version
+      req.headers['oauth_signature'] = oauth_signature
+    end
+
+    byebug
 
     return {token: access_token, connection: conn}
   end
