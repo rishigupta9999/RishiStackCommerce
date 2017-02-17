@@ -39,33 +39,7 @@ class TwitterController < ApplicationController
       access_token = parsed_response["access_token"]
     end
 
-    oauth_consumer_key = ENV['TWITTER_API_KEY']
-    oauth_nonce = self.nonce
-    oauth_signature_method = 'HMAC-SHA1'
-    oauth_timestamp = Time.now.to_i.to_s
-    oauth_token = current_user.token
-    oauth_version = "1.0"
-
-    # Generate signature
-
-    parameters = 'oauth_consumer_key=' +
-              oauth_consumer_key +
-              '&oauth_nonce=' +
-              oauth_nonce +
-              '&oauth_signature_method=' +
-              oauth_signature_method +
-              '&oauth_timestamp=' +
-              oauth_timestamp +
-              '&oauth_token=' +
-              oauth_token + 
-              '&oauth_version=' +
-              oauth_version
-
     url = "https://api.twitter.com/1.1/account/settings.json"
-    base_string = 'GET&' + CGI.escape(url) + '&' + CGI.escape(parameters)
-    signing_key = CGI.escape(ENV['TWITTER_API_SECRET']) + "&" + CGI.escape(current_user.secret)
-
-    oauth_signature = CGI.escape(Base64.encode64("#{OpenSSL::HMAC.digest('sha1',signing_key, base_string)}").chomp)
 
     credentials = {
         consumer_key: ENV['TWITTER_API_KEY'],
@@ -74,34 +48,14 @@ class TwitterController < ApplicationController
         token_secret: current_user.secret
       }
 
-      byebug
     foo = SimpleOAuth::Header.new('GET', url, {}, credentials.merge(ignore_extra_keys: true))
-
-    # Generate authorization header
-    dst = "OAuth "
-    dst += 'oauth_consumer_key=' +
-              CGI.escape(oauth_consumer_key) +
-              ', oauth_nonce=' +
-              CGI.escape(oauth_nonce) +
-              ', oauth_signature=' +
-              CGI.escape(oauth_signature) +
-              ', oauth_signature_method=' +
-              CGI.escape(oauth_signature_method) +
-              ', oauth_timestamp=' +
-              CGI.escape(oauth_timestamp) +
-              ', oauth_token=' +
-              CGI.escape(oauth_token) + 
-              ', oauth_version=' +
-              CGI.escape(oauth_version)
-
-    byebug
 
     response = conn.get do |req|
       req.url '/1.1/account/settings.json'
       req.headers['Authorization'] = foo.to_s
     end
 
-    byebug
+    puts response.body
 
     return {token: access_token, connection: conn}
   end
