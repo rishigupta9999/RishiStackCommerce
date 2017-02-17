@@ -17,18 +17,23 @@ class TwitterController < ApplicationController
     conn = connection_info[:connection]
 
     screen_name = params["screen_name"]
+    last_tweet_id = params["last_tweet_id"]
 
-    parsed_response = Rails.cache.fetch("tweet-#{screen_name}", expires_in: 5.minutes) do
+    #parsed_response = Rails.cache.fetch("tweet-#{screen_name}-#{last_tweet_id}", expires_in: 5.minutes) do
 
-      puts "Tweet cache miss"
+      url_arg = "screen_name=#{screen_name}&count=25"
+
+      if (last_tweet_id != "0")
+        url_arg += "&max_id=#{last_tweet_id}"
+      end
 
       response = conn.get do |req|
-        req.url "/1.1/statuses/user_timeline.json?screen_name=#{screen_name}&count=25"
+        req.url "/1.1/statuses/user_timeline.json?#{url_arg}"
         req.headers['Authorization'] = "Bearer #{bearer_token}"
       end
 
       parsed_response = JSON.parse(response.body)
-    end
+    #end
 
     render json: parsed_response
 

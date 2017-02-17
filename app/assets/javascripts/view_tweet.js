@@ -39,7 +39,7 @@ function TwitterViewModel()
       history.pushState(self.current_screen_name, null, "/" + self.twitterHandle());
     }
 
-    $.get("/twitter/retrieve_tweets_for_handle", { "screen_name" : self.current_screen_name }, function(data) {
+    $.get("/twitter/retrieve_tweets_for_handle", { "screen_name" : self.current_screen_name, "last_tweet_id" : lastTweetId }, function(data) {
 
       for (cur_tweet in data)
       {
