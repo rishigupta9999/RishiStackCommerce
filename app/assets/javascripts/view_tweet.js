@@ -27,9 +27,9 @@ function TwitterViewModel()
 
     self.current_screen_name = self.twitterHandle();
 
-    if (updatePushState)
+    //if (updatePushState)
     {
-      history.pushState(self.current_screen_name, null, null);
+      history.pushState(self.current_screen_name, null, "/" + self.twitterHandle());
     }
 
     $.get("/twitter/retrieve_tweets_for_handle", { "screen_name" : self.current_screen_name }, function(data) {
