@@ -1,3 +1,5 @@
+var lastTweetId = 0;
+
 function TwitterViewModel()
 {
   var self = this;
@@ -13,6 +15,11 @@ function TwitterViewModel()
     mention_name = event.attributes.getNamedItem("mention-name").value.slice(1);
     self.twitterHandle(mention_name);
     self.retrieveTweetsHelper(true);
+  }
+
+  self.nextTweets = function()
+  {
+    self.retrieveTweetsHelper(true)
   }
 
   self.retrieveTweets = function()
@@ -53,6 +60,8 @@ function TwitterViewModel()
 
         self.tweets.push(tweet_info)
       }
+
+      lastTweetId = data[data.length-1].id_str
 
       self.retrievingTweets(false);
     });
